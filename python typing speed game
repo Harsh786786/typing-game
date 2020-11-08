@@ -1,0 +1,137 @@
+words =['mango','gun','fan','door','laptop','red','blue','grey','white','heavy','small','Thin','Small','Matter','Output'
+        ,'Green','Hello World','Type fast','python','Java','Wonderful',
+        'I like it','Best','Worst','nice','Slow']
+
+
+
+######################################################################Functions
+def labelSlider():#### function for world sliding
+    global count, sliderWords
+    text= 'Welcome to typing speed game'
+    if (count >= len(text)):
+        count = 0
+        sliderWords = ''
+    sliderWords += text[count]
+    count += 1
+    fontLabel.configure(text=sliderWords)
+    fontLabel.after(300,labelSlider)
+############################################################
+###################for timer countown
+def time():
+    global timeLeft,score,miss
+    if(timeLeft >=11):
+        pass
+    else:
+        timeLabelCount.configure(fg='red')
+    if(timeLeft>0):
+        timeLeft -=1
+        timeLabelCount.configure(text=timeLeft)
+        timeLabelCount.after(1000,time)
+    else:
+        gamePlayDetailLabel.configure(text='Hit ={}| Miss={}| Total Score= {}'.format(score,miss,score-miss))
+        ####################{} with formate used to store data in one time line wise
+
+        ################## message box notifi after game end to retry
+        rr = messagebox.askretrycancel('Notification','For PLay Agan Hit Retry Button')
+        ############################if retry pressed again form starting
+        if(rr==True):
+            score=0
+            timeLeft=60
+            miss=0
+            timeLabelCount.configure(text=timeLeft)
+            wordLabel.configure(text=words[0])
+            scoreLabelCount.configure(text=score)
+#######################################################################
+
+#############################################################################################
+
+
+############AFTER CLICKING ENTER
+def startGame(event):
+###############################################
+    global score,miss ###score an miss global variable use in whole program
+###############################
+    if(timeLeft==60):#####for calling time one tie other wise fast countdown
+       time()#############calling time function
+
+##########################
+    gamePlayDetailLabel.configure(text='')
+############################################################################
+    if(wordEntry.get() == wordLabel['text']):
+        score += 1
+        scoreLabelCount.configure(text=score)#######in score value refresh and update our score
+    ####if else condition for our typed word matchd by given word a
+    else:                         #####and after delete matched and print score and miss
+        miss+=1
+#################################################################################
+
+    random.shuffle(words)###for refreshing new words inside game by opening one time
+    wordLabel.configure(text=words[0])##after using shuffel use this congigure to modify
+    print(wordEntry.get()) ## function for storing words and displaying
+    wordEntry.delete(0,END)###after typing word delete the word for upcoming word
+##############################################################################################
+
+
+######################################################### Liberary
+from tkinter import *
+from tkinter import messagebox
+
+import random ### for randoms words our words will changed
+
+########################### Root Method
+
+root=Tk()
+root.geometry('700x600+500+100')
+root.configure(bg='powder blue')
+root.title('TYPING SPEED GAME')
+root.iconbitmap('typing.ico')
+############################################ Variabels
+
+score=0####its show our score
+timeLeft=60
+count=0
+sliderWords = ''
+miss=0###for words that miss
+
+################################ Lable method
+
+fontLabel = Label(root,text='',font=('airal',25,'italic bold'),bg='powder blue',fg='red',width=35)
+
+fontLabel.place(x=10,y=10)
+labelSlider()#call for sliding the text of label
+
+###words[0]  means many words above named
+random.shuffle(words)##for shufflng words but ony one time run again and again above random used
+wordLabel=Label(root,text=words[0],font=('airal',25,'italic bold'),bg=('powder blue'))
+wordLabel.place(x=300,y=200)
+
+scoreLabel = Label(root,text="Your Score",font=('airal',25,'italic bold'),bg='powder blue')
+scoreLabel.place(x=10,y=100)
+
+scoreLabelCount =Label(root,text=score,font=('airal',25,'italic bold'),bg='powder blue',fg='blue')
+scoreLabelCount.place(x=80,y=180)
+
+timerLabel=Label(root,text='Time Left',font=('airal',25,'italic bold'),bg='powder blue')
+timerLabel.place(x=500,y=100)
+
+timeLabelCount=Label(root,text=timeLeft,font=('airal',25,'italic bold'),bg='powder blue',fg='blue')
+timeLabelCount.place(x=550,y=180)
+
+gamePlayDetailLabel=Label(root,text='Type Word and Hit Enter Button',font=('airal',25,'italic bold'),bg='powder blue',fg='dark grey')
+gamePlayDetailLabel.place(x=120,y=450)
+
+
+
+
+#####################################################     Entry box
+
+wordEntry=Entry(root,font=('airal',25,'italic bold'),bd=10,justify='center')
+wordEntry.place(x=180,y=300)
+wordEntry.focus_set()
+
+############################################################
+
+
+root.bind('<Return>',startGame) #### for enter button press enter and next word##show enter also
+## enter click hote hii it will go go start game
+root.mainloop()
